@@ -7,7 +7,7 @@ from tools.image import split_items, unique_images, images_to_number_type
 from tools.game import clean_items
 
 if __name__ == '__main__':
-    log_print('auto_lianliankan start at ' + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))
+    log_print('main auto_lianliankan start at ' + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))
 
     screen_image = get_screen_image()
     game_position = get_window_position(SETTING.WINDOW_TITLE)

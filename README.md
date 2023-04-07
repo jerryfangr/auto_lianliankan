@@ -4,13 +4,12 @@
 ## 简介
 - 基于opencv orb 图像相似度比较的连连看物理外挂
 
-## 原理：
-  1. PIL.ImageGrab.grab() 获取当前屏幕截图
-  2. 裁剪出其中连连看的游戏消除块的区域，最终裁出每个消除块图片
-  3. 根据图像相似度比较，获得所有类型的消除块图片，包括手动指定的消除后的空白块和障碍块图片
-  4. 将图片更上一步的所有类型图片，相似度比较，生成数字类型矩阵
-  5. 遍历数字类型矩阵，查看可以消除的方块坐标
-  6. 模拟点击消除块
+- 示例基于 饿了么 美味天天连，测试手机通过 [scrcpy](https://github.com/Genymobile/scrcpy) 投屏到电脑
+
+
+## 预览
+  todo
+
 
 ## 环境:
 - python3.7+
@@ -20,6 +19,7 @@
 pip install -r requirements.txt
 ```
 
+
 ## 安装(Anconda):
 ```powershell
 conda create -n game
@@ -27,45 +27,93 @@ conda activate game
 pip install -r requirements.txt
 ```
 
+
 ## 使用
 
-### 添加配置
-> auto_lianliankan/config/setting.py
+### 修改配置
+> `auto_lianliankan/config/setting.py`
+
+![配置参照图](./assets/ref-01.png)
 
 ```python
-# allow outside link
+# 是否允许最外层的方块相连
 ALLOW_OUTSIDE_LINK = True
 
-# image path of empty item
-EMPTY_IMAGE_PATH = ["data/empty1.png"]
-# image path of obstacles
-BLOCK_IMAGE_PATH = ["data/block1.png"]
-
-# game window title
+# 游戏窗口标题，示例是 Scrcpy 连接的测试手机小米9 的窗口标题
 WINDOW_TITLE = "MI 9 Transparent Edition"
 
-# the interval of game click
-LINK_INTERVAL = 0.1
+# 方块点击后的停顿间隔
+LINK_INTERVAL = 0.2
 
-# the MARGIN_LEFT of game area to the game window
+# 游戏内容区，距离游戏窗口边框左边的距离
 MARGIN_LEFT = 56
-# the MARGIN_HEIGHT of game area to the game window
-MARGIN_HEIGHT = 244 + 28
+# 游戏内容区，距离游戏窗口边框上边的距离，包括标题栏的长度
+MARGIN_TOP = 244 + 28
 
-# the number of the item in the horizontal direction
+# 水平的可相连消除块数量
 HORIZONTAL_NUM = 6
-# the number of the item in the vertical direction
+# 垂直的可相连消除块数量
 VERTICAL_NUM = 8
 
-# the size of the item 
-ITEM_WIDTH = ITEM_HEIGHT = 55
+# 平均每个消除块的尺寸
+ITEM_WIDTH = 55
+ITEM_HEIGHT = 55
 
-# cut the image noise, (LT)left top to (RB)right bottom
+# 裁剪消除块，尽可能去除边框空白只留下图形
 bx, by = 6, 6
+# 以下为最终的消除快尺寸，无需改动 55-6 = 49x49
+FINAL_WIDTH = ITEM_WIDTH - bx
+FINAL_HEIGHT = ITEM_HEIGHT - by
+
+# 消除后留下的空白图形，需要跟 FINAL_WIDTH，FINAL_HEIGH尺寸相同，本示例就是49x49大小的图片
+EMPTY_IMAGE_PATH = ["data/empty1.png"]
+# 无法被消除的障碍物方块图形，需要跟 FINAL_WIDTH，FINAL_HEIGH尺寸相同，本示例就是49x49大小的图片
+BLOCK_IMAGE_PATH = ["data/block1.png"]
+
+```
+
+### 测试配置
+**1. 执行代码，获得模拟数据** 
+```powershell
+cd Auto-Lianliankan/auto_lianliankan/
+python ./test.py
+```
+
+**2. 执行成功后，打开文件夹`Auto-Lianliankan/auto_lianliankan/temp`**
+
+  + 查看裁剪的消除块结果 `item_*.png`
+
+  + 调整配置文件，运行`python ./test.py`，直至裁剪的消除块相对完成为止，最终标准可以参考图片
+    ![裁剪参考](./assets/ref-02.png)
+
+  + 查看终端输出/日志文件`Auto-Lianliankan/auto_lianliankan/log`
+    ```text
+    # 可以找到类似字段的识别结果。
+    # 0 表示空白方块，其余数字表示某种物品
+    # 判断识别准确率，可以快速找几对同类型的物品，查看对应位置的数字是否相同
+    [info] type_matrix: 
+    [[ 0  0  0  0  0  0  0  0]
+     [ 0  1  1  2  8  2  6  0]
+     [ 0  2  6 10  4  1 37  0]
+     [ 0  3  0  0  1 11 38  0]
+     [ 0  1 35  1 36  2 13  0]
+     [ 0  4  7 10 12 12 10  0]
+     [ 0  3  8 11  4 13  9  0]
+     [ 0  5  6  5  9  8 10  0]
+     [ 0  6  9  9  7  8  4  0]
+     [ 0  0  0  0  0  0  0  0]]
+    ```
+
+### 运行程序自动连连看
+
+```powershell
+cd Auto-Lianliankan/auto_lianliankan/
+python ./main.py
 ```
 
 
-
-## 开源协议:
-- Apache Licence
-
+## 变动(new -> old)：
+  - 增加障碍方块
+  - 修改图片比较 由[像素数据完全匹配] 为 [相似度比较 opencv orb]
+  - 增加日志功能
+  - 重构项目，拆分文件功能，去除部分全局变量

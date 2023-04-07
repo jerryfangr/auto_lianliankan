@@ -18,8 +18,8 @@ LINK_INTERVAL = 0.1
 
 # the MARGIN_LEFT of game area to the game window
 MARGIN_LEFT = 56
-# the MARGIN_HEIGHT of game area to the game window
-MARGIN_HEIGHT = 244 + 28
+# the MARGIN_TOP of game area to the game window
+MARGIN_TOP = 244 + 28
 
 # the number of the item in the horizontal direction
 HORIZONTAL_NUM = 6

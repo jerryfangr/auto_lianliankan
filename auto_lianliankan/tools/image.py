@@ -68,7 +68,7 @@ def split_items(screen_image: 'np.uint8', game_pos: 'tuple', save_image=False):
     
     # get the position of the game area
     game_x = game_pos[0] + SETTING.MARGIN_LEFT
-    game_y = game_pos[1] + SETTING.MARGIN_HEIGHT
+    game_y = game_pos[1] + SETTING.MARGIN_TOP
 
     # split the number of the horizontal and vertical items
     items = []

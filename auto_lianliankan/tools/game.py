@@ -22,7 +22,7 @@ def calculate_clean_position(type_matrix, game_x: 'int', game_y: 'int'):
                             if check_can_link(i, j, m, n, type_matrix):
                                 type_matrix[i][j] = 0
                                 type_matrix[m][n] = 0
-                                log_print('clean item: ' + str(i+1-start) + ',' + str(j+1-start) +' and' + str(m+1-start) + ',' + str(n+1-start))
+                                log_print('clean item: ' + str(i+1-start) + ',' + str(j+1-start) +' <-> ' + str(m+1-start) + ',' + str(n+1-start))
                                 x1 = game_x + (j - start) * SETTING.ITEM_WIDTH
                                 y1 = game_y + (i - start) * SETTING.ITEM_HEIGHT
                                 x2 = game_x + (n - start) * SETTING.ITEM_WIDTH
@@ -34,18 +34,18 @@ def calculate_clean_position(type_matrix, game_x: 'int', game_y: 'int'):
     return clean_position_list
 
 
-def clean_items(type_matrix, game_position: 'tuple'):
+def clean_items(type_matrix, game_position: 'tuple', fake_click: 'bool' = False):
     '''
     clean the item
     '''
     game_x = game_position[0] + SETTING.MARGIN_LEFT
-    game_y = game_position[1] + SETTING.MARGIN_HEIGHT
+    game_y = game_position[1] + SETTING.MARGIN_TOP
 
     clean_position = calculate_clean_position(type_matrix, game_x, game_y)
-    log_print('clean_position: ' + str(clean_position))
     while len(clean_position) > 0:
         [item1_position, item2_position] = clean_position
-        click_screen(item1_position[0], item1_position[1])
-        click_screen(item2_position[0], item2_position[1])
+        if fake_click is False:
+            click_screen(item1_position[0], item1_position[1])
+            click_screen(item2_position[0], item2_position[1])
         clean_position = calculate_clean_position(type_matrix, game_x, game_y)
         click_screen(1000, 900, 0.1, 2)

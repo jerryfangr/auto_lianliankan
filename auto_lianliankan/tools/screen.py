@@ -11,7 +11,7 @@ from tools.logger import log_print
 
 PROJECT_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-def get_screen_image(type=None):
+def get_screen_image(type: 'str|None'=None):
     """
     Get the screenshot
     args:
