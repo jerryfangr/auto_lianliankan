@@ -50,4 +50,6 @@ Temporary Items
 .idea/
 screen.png
 __pycache__/
+temp/
+*.log.txt
 

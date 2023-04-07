@@ -1,33 +1,71 @@
 
-## 名称:
-- 连连看外挂
+# 自动连连看辅助
 
 ## 简介
-- 基于图像识别实现的连连看外挂
+- 基于opencv orb 图像相似度比较的连连看物理外挂
 
-## 说明:
-- 环境需求：python3.5 + opencv + windowsAPI
-- 注意：此程序中的config.py文件是此程序中用到的所有的配置信息，开源的配置信息是针对我这里面所提供的连连看.rar中的连连看游戏的。也就是说这个外挂使用的时候，要打开这个我提供的这个连连看游戏，这套配置不是破解腾讯的游戏的。想要破解腾讯QQ游戏中的连连看，只需要把配置信息修改成与QQ游戏对应的那一套就行，但这套值是多少我不提供。
+## 原理：
+  1. PIL.ImageGrab.grab() 获取当前屏幕截图
+  2. 裁剪出其中连连看的游戏消除块的区域，最终裁出每个消除块图片
+  3. 根据图像相似度比较，获得所有类型的消除块图片，包括手动指定的消除后的空白块和障碍块图片
+  4. 将图片更上一步的所有类型图片，相似度比较，生成数字类型矩阵
+  5. 遍历数字类型矩阵，查看可以消除的方块坐标
+  6. 模拟点击消除块
 
-## 用法:
-- 先打开游戏，游戏运行后（游戏开始后），运行脚本。主要要确保游戏窗体不能拖拽到屏幕意外，程序无法识别屏幕以外的数据。
+## 环境:
+- python3.7+
 
-## 原理简述：
-- 目标：让计算机替我们执行连连看算法，所以只需要让程序认识图片，并且替我们点击鼠标就可以。
-- 实现：
-    - 步骤一：对屏幕进行图像分析，将图片的矩阵转化成计算机认识的数组。（通过图像切片和图片比较实现）
-    - 步骤二：计算机对数组执行连连看的算法，计算可以连通的点。（单纯的数值运算）
-    - 步骤三：让计算机发送鼠标事件，点击可以连通的两个点。（Windows API实现）
-    - 重复步骤二、三直到游戏胜利。
+## 安装:
+```powershell
+pip install -r requirements.txt
+```
 
-## 备注
-- 此项目开源仅仅是为了交流学习，大肆流传可能会对其他公司的商业产品造成损失，所以请自觉遵守法律以及道德规范，切勿将其挪作他用，更不可用其获取商业利益！
+## 安装(Anconda):
+```powershell
+conda create -n game
+conda activate game
+pip install -r requirements.txt
+```
+
+## 使用
+
+### 添加配置
+> auto_lianliankan/config/setting.py
+
+```python
+# allow outside link
+ALLOW_OUTSIDE_LINK = True
+
+# image path of empty item
+EMPTY_IMAGE_PATH = ["data/empty1.png"]
+# image path of obstacles
+BLOCK_IMAGE_PATH = ["data/block1.png"]
+
+# game window title
+WINDOW_TITLE = "MI 9 Transparent Edition"
+
+# the interval of game click
+LINK_INTERVAL = 0.1
+
+# the MARGIN_LEFT of game area to the game window
+MARGIN_LEFT = 56
+# the MARGIN_HEIGHT of game area to the game window
+MARGIN_HEIGHT = 244 + 28
+
+# the number of the item in the horizontal direction
+HORIZONTAL_NUM = 6
+# the number of the item in the vertical direction
+VERTICAL_NUM = 8
+
+# the size of the item 
+ITEM_WIDTH = ITEM_HEIGHT = 55
+
+# cut the image noise, (LT)left top to (RB)right bottom
+bx, by = 6, 6
+```
+
+
 
 ## 开源协议:
 - Apache Licence
 
-## 截图
-- 当然，在最后show几张图，展示下外挂的惊人效果，将时间间隔设置为0。
-![截图1](show/show_1.jpg)
-![截图2](show/show_2.jpg)
-![截图3](show/show_3.jpg)
