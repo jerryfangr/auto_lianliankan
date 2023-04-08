@@ -2,13 +2,13 @@
 # 自动连连看辅助
 
 ## 简介
-- 基于opencv orb 图像相似度比较的连连看物理外挂
+- 基于opencv orb 图像相似度比较的连连看物理外挂，由程序识别相似方块，模拟鼠标点击 
 
 - 示例基于 饿了么 美味天天连，测试手机通过 [scrcpy](https://github.com/Genymobile/scrcpy) 投屏到电脑
 
 
 ## 预览
-  todo
+  ![预览图1](./assets/preview-1.gif)
 
 
 ## 环境:
@@ -110,10 +110,3 @@ python ./test.py
 cd Auto-Lianliankan/auto_lianliankan/
 python ./main.py
 ```
-
-
-## 变动(new -> old)：
-  - 增加障碍方块
-  - 修改图片比较 由[像素数据完全匹配] 为 [相似度比较 opencv orb]
-  - 增加日志功能
-  - 重构项目，拆分文件功能，去除部分全局变量
