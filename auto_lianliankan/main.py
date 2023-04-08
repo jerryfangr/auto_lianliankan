@@ -9,17 +9,23 @@ from tools.game import clean_items
 if __name__ == '__main__':
     log_print('main auto_lianliankan start at ' + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))
 
-    screen_image = get_screen_image()
+    # get game window position
     game_position = get_window_position(SETTING.WINDOW_TITLE)
 
+    # get screen image
+    screen_image = get_screen_image()
+
+    # split items image from screen image
     game_item_images = split_items(screen_image, game_position, save_image=False)
 
+    # get unique type images
     type_images = unique_images(game_item_images)
 
-    # transpose the matrix
+    # map item image to type number(by type images index) then transpose the matrix
     wrapper = 0 if SETTING.ALLOW_OUTSIDE_LINK else None
     type_matrix = np.transpose(images_to_number_type(game_item_images, type_images, wrapper))
 
     log_print('type_matrix: \n' + str(type_matrix))
 
+    # auto click items to clean items
     clean_items(type_matrix, game_position)
