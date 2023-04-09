@@ -111,3 +111,9 @@ python ./test.py
 cd Auto-Lianliankan/auto_lianliankan/
 python ./main.py
 ```
+
+## 声明
+
+- 项目基于Apache License 2.0开源协议，使用请遵守协议规范
+
+- 项目仅供学习交流使用，不对使用者的任何行为负责
