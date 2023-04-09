@@ -9,6 +9,7 @@
 
 ## 预览
   ![预览图1](./assets/preview-1.gif)
+  ![预览图2](./assets/preview-2.png)
 
 
 ## 环境:

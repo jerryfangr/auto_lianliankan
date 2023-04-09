@@ -1,3 +1,4 @@
+from time import sleep
 from tools.logger import log_print
 from config import setting as SETTING
 from tools.screen import click_screen
@@ -34,17 +35,27 @@ def calculate_clean_position(type_matrix, game_x: 'int', game_y: 'int'):
     return clean_position_list
 
 
-def clean_items(type_matrix, game_position: 'tuple', fake_click: 'bool' = False):
+def clean_items(type_matrix, game_position: 'tuple', fake_click: 'bool' = False, max_clean_count: 'int' = -1):
     '''
     clean the item
     '''
     game_x = game_position[0] + SETTING.MARGIN_LEFT
     game_y = game_position[1] + SETTING.MARGIN_TOP
 
+    count = 1
+
     clean_position = calculate_clean_position(type_matrix, game_x, game_y)
     while len(clean_position) > 0:
         [item1_position, item2_position] = clean_position
         if fake_click is False:
-            click_screen(item1_position[0], item1_position[1])
-            click_screen(item2_position[0], item2_position[1])
+            click_screen(item1_position[0], item1_position[1], 0.08)
+            click_screen(item2_position[0], item2_position[1], 0.08)
+            sleep(SETTING.CLICK_INTERVAL)
+        
+        if max_clean_count > 0 and count >= max_clean_count:
+            break
+
+        count += 1
         clean_position = calculate_clean_position(type_matrix, game_x, game_y)
+
+    log_print('clean all items count: ' + str(count))

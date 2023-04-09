@@ -27,5 +27,9 @@ if __name__ == '__main__':
 
     log_print('type_matrix: \n' + str(type_matrix))
 
-    # auto click items to clean items
-    clean_items(type_matrix, game_position)
+    # auto click items to clean items 11 11 14 all
+    # round 1, 2, 3
+    # clean_items(type_matrix, game_position, False, max_clean_count=14)
+
+    # round 4(final)
+    clean_items(type_matrix, game_position, False)

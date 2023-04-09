@@ -66,10 +66,9 @@ def click_screen(x: 'int', y: 'int', sleep_wait=0.1, count=2):
         None
     """
     x, y = math.floor(x), math.floor(y)
-    win32api.SetCursorPos((x, y))
-    sleep(0.05)
 
     for i in range(count):
+        win32api.SetCursorPos((x, y))
         win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, x, y, 0, 0)
         win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, x, y, 0, 0)
         sleep(sleep_wait)
