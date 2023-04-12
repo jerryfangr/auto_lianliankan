@@ -12,7 +12,7 @@ def calculate_clean_position(type_matrix, game_x: 'int', game_y: 'int'):
     cx, cy = SETTING.FINAL_WIDTH/2, SETTING.FINAL_HEIGHT/2
     start = 1 if SETTING.ALLOW_OUTSIDE_LINK else 0
     endSub = 1 if SETTING.ALLOW_OUTSIDE_LINK else 0
-    clean_position_list = []
+    clean_position = []
     for i in range(start, len(type_matrix) - endSub):
         for j in range(start, len(type_matrix[i]) - endSub):
             if type_matrix[i][j] != 0:
@@ -23,19 +23,21 @@ def calculate_clean_position(type_matrix, game_x: 'int', game_y: 'int'):
                             if check_can_link(i, j, m, n, type_matrix):
                                 type_matrix[i][j] = 0
                                 type_matrix[m][n] = 0
-                                log_print('clean item: ' + str(i+1-start) + ',' + str(j+1-start) +' <-> ' + str(m+1-start) + ',' + str(n+1-start))
                                 x1 = game_x + (j - start) * SETTING.ITEM_WIDTH
                                 y1 = game_y + (i - start) * SETTING.ITEM_HEIGHT
                                 x2 = game_x + (n - start) * SETTING.ITEM_WIDTH
                                 y2 = game_y + (m - start) * SETTING.ITEM_HEIGHT
-                                clean_position_list.append((x1 + cx, y1 + cy))
-                                clean_position_list.append((x2 + cx, y2 + cy))
-
-                                return clean_position_list
-    return clean_position_list
+                                clean_position.append((x1 + cx, y1 + cy))
+                                clean_position.append((x2 + cx, y2 + cy))
+                                clean_position.append('({},{}) <-> ({},{})'.format(i+1-start, j+1-start, m+1-start, n+1-start))
 
 
-def clean_items(type_matrix, game_position: 'tuple', fake_click: 'bool' = False, max_clean_count: 'int' = -1):
+
+                                return clean_position
+    return clean_position
+
+
+def clean_items(type_matrix, game_position: 'tuple', fake_click: 'bool' = False, max_clean_count: 'int' = -1, min_clean_count: 'int' = -1):
     '''
     clean the item
     '''
@@ -45,12 +47,9 @@ def clean_items(type_matrix, game_position: 'tuple', fake_click: 'bool' = False,
     count = 1
 
     clean_position = calculate_clean_position(type_matrix, game_x, game_y)
+    clean_position_list = []
     while len(clean_position) > 0:
-        [item1_position, item2_position] = clean_position
-        if fake_click is False:
-            click_screen(item1_position[0], item1_position[1], 0.08)
-            click_screen(item2_position[0], item2_position[1], 0.08)
-            sleep(SETTING.CLICK_INTERVAL)
+        clean_position_list.append(clean_position)
         
         if max_clean_count > 0 and count >= max_clean_count:
             break
@@ -58,4 +57,16 @@ def clean_items(type_matrix, game_position: 'tuple', fake_click: 'bool' = False,
         count += 1
         clean_position = calculate_clean_position(type_matrix, game_x, game_y)
 
-    log_print('clean all items count: ' + str(count))
+    log_print('Get all clean items: ' + str(count) + ' || Least need: ' + str(min_clean_count))
+
+    if fake_click is False:
+        if len(clean_position_list) > min_clean_count:
+            for clean_position in clean_position_list:
+                [item1_position, item2_position, description] = clean_position
+                click_screen(item1_position[0], item1_position[1], 0.06)
+                click_screen(item2_position[0], item2_position[1], 0.06)
+                sleep(SETTING.CLICK_INTERVAL)
+                log_print('Clean item: ' + description + ' Done')
+        else:
+            log_print('Clean item: Not enough items to clean')
+
