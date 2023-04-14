@@ -8,26 +8,43 @@ from tools.game import clean_items
 
 if __name__ == '__main__':
     log_print('main auto_lianliankan start at ' + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))
+    log_print('[Ctrl + C] to exit, Enter any [number] to start')
 
-    # get game window position
-    game_position = get_window_position(SETTING.WINDOW_TITLE)
+    round = int(input('round: ') or 0)
+    round = 4 if round >= 5 else round
+    for i in range(round, 5):
+        log_print('-----------> round {} start <-----------'.format(i))
+        # get game window position
+        game_position = get_window_position(SETTING.WINDOW_TITLE)
 
-    # get screen image
-    screen_image = get_screen_image()
+        # get screen image
+        screen_image = get_screen_image()
 
-    # split items image from screen image
-    game_item_images = split_items(screen_image, game_position, save_image=False)
+        # split items image from screen image
+        game_item_images = split_items(screen_image, game_position, save_image=False)
 
-    # get unique type images
-    type_images = unique_images(game_item_images)
+        # get unique type images
+        type_images = unique_images(game_item_images)
 
-    # map item image to type number(by type images index) then transpose the matrix
-    wrapper = 0 if SETTING.ALLOW_OUTSIDE_LINK else None
-    type_matrix = np.transpose(images_to_number_type(game_item_images, type_images, wrapper))
+        # map item image to type number(by type images index) then transpose the matrix
+        wrapper = 0 if SETTING.ALLOW_OUTSIDE_LINK else None
+        type_matrix = np.transpose(images_to_number_type(game_item_images, type_images, wrapper))
 
-    log_print('type_matrix: \n' + str(type_matrix))
+        log_print('type_matrix: \n' + str(type_matrix))
 
-    # auto click items to clean items 11 11 14 all
-    # round 1, 2, 3 / 4(final)
-    # clean_items(type_matrix, game_position, False, max_clean_count=14, min_clean_count=12)
-    clean_items(type_matrix, game_position, False, -1, 14)
+        # # * auto click items to clean || 10 11 11 14 all
+        # # # round 0, 1, 2, 3 / 4(final)
+        
+        # # clean_items(type_matrix, game_position, False, 14, 12)
+        # clean_items(type_matrix, game_position, False, -1, 1)
+        # # waitKey
+        if i == 0:
+            clean_items(type_matrix, game_position, False, max_clean_count=11, min_clean_count=10)
+        elif i == 1 or i == 2:
+            clean_items(type_matrix, game_position, False, 12, 11)
+        elif i == 3:
+            clean_items(type_matrix, game_position, False, 14, 14)
+        else:
+            clean_items(type_matrix, game_position, False, -1, 1)
+
+        input('Press [Enter] to next round or [Ctrl + C] to exit...')

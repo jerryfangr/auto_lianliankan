@@ -14,7 +14,7 @@ BLOCK_IMAGE_PATH = ["data/block1.png"]
 WINDOW_TITLE = "MI 9 Transparent Edition"
 
 # the interval of game click (seconds)
-CLICK_INTERVAL = 0.1
+CLEAN_INTERVAL = 0.15
 
 # the MARGIN_LEFT of game area to the game window
 MARGIN_LEFT = 56

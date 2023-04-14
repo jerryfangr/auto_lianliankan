@@ -45,7 +45,6 @@ def clean_items(type_matrix, game_position: 'tuple', fake_click: 'bool' = False,
     game_y = game_position[1] + SETTING.MARGIN_TOP
 
     count = 1
-
     clean_position = calculate_clean_position(type_matrix, game_x, game_y)
     clean_position_list = []
     while len(clean_position) > 0:
@@ -60,12 +59,12 @@ def clean_items(type_matrix, game_position: 'tuple', fake_click: 'bool' = False,
     log_print('Get all clean items: ' + str(count) + ' || Least need: ' + str(min_clean_count))
 
     if fake_click is False:
-        if len(clean_position_list) > min_clean_count:
+        if len(clean_position_list) >= min_clean_count:
             for clean_position in clean_position_list:
                 [item1_position, item2_position, description] = clean_position
                 click_screen(item1_position[0], item1_position[1], 0.06)
                 click_screen(item2_position[0], item2_position[1], 0.06)
-                sleep(SETTING.CLICK_INTERVAL)
+                sleep(SETTING.CLEAN_INTERVAL)
                 log_print('Clean item: ' + description + ' Done')
         else:
             log_print('Clean item: Not enough items to clean')
