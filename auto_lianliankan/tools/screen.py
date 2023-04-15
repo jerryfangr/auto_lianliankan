@@ -1,8 +1,6 @@
 import math
 import os
-import win32api
-import win32gui
-import win32con
+import win32api, win32gui, win32con, win32com.client
 import cv2
 from PIL import ImageGrab
 from time import sleep
@@ -45,6 +43,10 @@ def get_window_position(window_title=''):
         log_print('Failed to obtain window, try again in 3 seconds...', 'error')
         sleep(3)
         window = win32gui.FindWindow(None, window_title)
+
+    # Undocks the focus from Python IDLE
+    shell = win32com.client.Dispatch("WScript.Shell")
+    shell.SendKeys('%')
 
     # set the window to the foreground
     win32gui.SetForegroundWindow(window)

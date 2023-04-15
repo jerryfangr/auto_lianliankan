@@ -32,12 +32,8 @@ if __name__ == '__main__':
 
         log_print('type_matrix: \n' + str(type_matrix))
 
-        # # * auto click items to clean || 10 11 11 14 all
-        # # # round 0, 1, 2, 3 / 4(final)
-        
-        # # clean_items(type_matrix, game_position, False, 14, 12)
-        # clean_items(type_matrix, game_position, False, -1, 1)
-        # # waitKey
+        # * auto click items to clean || 10 11 11 14 all
+        # round 0, 1, 2, 3 / 4(final)
         if i == 0:
             clean_items(type_matrix, game_position, False, max_clean_count=11, min_clean_count=10)
         elif i == 1 or i == 2:
@@ -47,4 +43,5 @@ if __name__ == '__main__':
         else:
             clean_items(type_matrix, game_position, False, -1, 1)
 
-        input('Press [Enter] to next round or [Ctrl + C] to exit...')
+        if i < 4:
+            input('Press [Enter] to next round || [Ctrl + C] to exit')
