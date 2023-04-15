@@ -143,7 +143,7 @@ def unique_images(images: 'list'):
         uq_imgs - the list of the unique images
     """
 
-    log_print("calculate unique images", "info")
+    log_print("Calculate unique images", "info")
     uq_imgs = []
 
     # add empty images

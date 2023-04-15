@@ -41,7 +41,7 @@ if __name__ == '__main__':
         elif i == 3:
             clean_items(type_matrix, game_position, False, 14, 14)
         else:
-            clean_items(type_matrix, game_position, False, -1, 1)
+            clean_items(type_matrix, game_position, False, -1, 20)
 
         if i < 4:
             input('Press [Enter] to next round || [Ctrl + C] to exit')

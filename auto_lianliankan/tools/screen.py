@@ -44,9 +44,8 @@ def get_window_position(window_title=''):
         sleep(3)
         window = win32gui.FindWindow(None, window_title)
 
-    # Undocks the focus from Python IDLE
-    shell = win32com.client.Dispatch("WScript.Shell")
-    shell.SendKeys('%')
+    # Unlock the focus from Python IDLE
+    win32com.client.Dispatch("WScript.Shell").SendKeys('%')
 
     # set the window to the foreground
     win32gui.SetForegroundWindow(window)
