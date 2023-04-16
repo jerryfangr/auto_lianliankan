@@ -1,38 +1,55 @@
 
 # 自动连连看辅助
 
-## 简介
-- 基于opencv orb 图像相似度比较的连连看物理外挂，由程序识别相似方块，模拟鼠标点击 
+本项目基于opencv 的 orb 图像相似度比较，实现了连连看自动消除，由程序识别相似方块，模拟鼠标点击。
 
-- 示例基于 饿了么 美味天天连，测试手机通过 [scrcpy](https://github.com/Genymobile/scrcpy) 投屏到电脑
+示例基于 饿了么 美味天天连，测试手机通过 [scrcpy](https://github.com/Genymobile/scrcpy) 投屏到电脑
 
+![预览图1](./assets/preview-1.gif)
 
-## 预览
-  ![预览图1](./assets/preview-1.gif)
-  ![预览图2](./assets/preview-2.png)
+![预览图2](./assets/preview-2.png)
 
+### 文件结构
+```bash
+auto_lianliankan
+|-- assets
+`-- main
+    |-- config
+    |-- data
+    |-- log
+    |-- temp
+    `-- tools
+```
+
+**项目的主要代码文件夹为 `main/`**
+- `config/` 中包含了配置文件 `setting.py`
+- `logs/` 中包含了每次运行时的部分日志
+- `data/` 中包含了自定义的空白方块和障碍物方块的图片样例
+- `temp/` 中包含了每次运行时的截图和裁剪后的消除块图片
 
 ## 环境:
-- python3.7+
+
+- python3.8+
 
 ## 安装:
+
 ```powershell
 pip install -r requirements.txt
 ```
 
-
 ## 安装(Anconda):
+
 ```powershell
 conda create -n game
 conda activate game
 pip install -r requirements.txt
 ```
 
-
 ## 使用
 
 ### 修改配置
-> `auto_lianliankan/config/setting.py`
+
+> `main/config/setting.py`
 
 ![配置参照图](./assets/ref-01.png)
 
@@ -44,7 +61,7 @@ ALLOW_OUTSIDE_LINK = True
 WINDOW_TITLE = "MI 9 Transparent Edition"
 
 # 方块点击后的停顿间隔
-LINK_INTERVAL = 0.2
+CLEAN_INTERVAL = 0.2
 
 # 游戏内容区，距离游戏窗口边框左边的距离
 MARGIN_LEFT = 56
@@ -74,20 +91,21 @@ BLOCK_IMAGE_PATH = ["data/block1.png"]
 ```
 
 ### 测试配置
+
 **1. 执行代码，获得模拟数据** 
 ```powershell
-cd Auto-Lianliankan/auto_lianliankan/
+cd Auto-Lianliankan/main/
 python ./test.py
 ```
 
-**2. 执行成功后，打开文件夹`Auto-Lianliankan/auto_lianliankan/temp`**
+**2. 执行成功后，打开文件夹`Auto-Lianliankan/main/temp`**
 
   + 查看裁剪的消除块结果 `item_*.png`
 
   + 调整配置文件，运行`python ./test.py`，直至裁剪的消除块相对完成为止，最终标准可以参考图片
     ![裁剪参考](./assets/ref-02.png)
 
-  + 查看终端输出/日志文件`Auto-Lianliankan/auto_lianliankan/log`
+  + 查看终端输出/日志文件`Auto-Lianliankan/main/log`
     ```text
     # 可以找到类似字段的识别结果。
     # 0 表示空白方块，其余数字表示某种物品
@@ -108,9 +126,13 @@ python ./test.py
 ### 运行程序自动连连看
 
 ```powershell
-cd Auto-Lianliankan/auto_lianliankan/
-python ./main.py
+cd Auto-Lianliankan/main/
+python ./run.py
 ```
+
+## 鸣谢
+
+本项目使用了 python-opencv、pywin32 等开源代码库。感谢各位开源工作者的贡献！
 
 ## 声明
 
