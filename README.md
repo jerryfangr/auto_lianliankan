@@ -128,6 +128,9 @@ python ./test.py
 ```powershell
 cd Auto-Lianliankan/main/
 python ./run.py
+
+# 或者执行脚本(Anconda)
+./start.ps1
 ```
 
 ## 鸣谢
