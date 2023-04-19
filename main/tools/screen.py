@@ -9,6 +9,19 @@ from tools.logger import log_print
 
 PROJECT_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+def set_run_position():
+    """
+    Set the run position
+    args:
+        None
+    return:
+        None
+    """
+
+    SETTING.RUN_POSITION = win32gui.GetCursorPos()
+    log_print('Save Run position: %s' % str(SETTING.RUN_POSITION))
+
+
 def get_screen_image(type: 'str|None'=None):
     """
     Get the screenshot

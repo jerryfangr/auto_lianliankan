@@ -69,3 +69,7 @@ def clean_items(type_matrix, game_position: 'tuple', fake_click: 'bool' = False,
         else:
             log_print('Clean item: Not enough items to clean')
 
+        # move cursor back to run position
+        click_screen(SETTING.RUN_POSITION[0], SETTING.RUN_POSITION[1], 0.06)
+
+

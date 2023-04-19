@@ -2,13 +2,14 @@ import time
 import numpy as np
 from tools.logger import log_print
 from config import setting as SETTING
-from tools.screen import get_window_position, get_screen_image
+from tools.screen import set_run_position, get_window_position, get_screen_image
 from tools.image import split_items, unique_images, images_to_number_type
 from tools.game import clean_items
 
 if __name__ == '__main__':
     log_print('main auto_lianliankan start at ' + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))
     log_print('[Ctrl + C] to exit, Enter any [number] to start')
+    set_run_position()
 
     round = int(input('round: ') or 0)
     round = 4 if round >= 5 else round

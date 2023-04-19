@@ -39,3 +39,6 @@ SUB_RB_Y = ITEM_HEIGHT + by
 # the final width and height of the item，the final item is 55-6=49x49
 FINAL_WIDTH = ITEM_WIDTH - bx
 FINAL_HEIGHT = ITEM_HEIGHT - by
+
+# ignore following value
+RUN_POSITION = (100, 100)
