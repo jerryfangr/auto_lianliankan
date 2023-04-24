@@ -22,7 +22,7 @@ def set_run_position():
     log_print('Save Run position: %s' % str(SETTING.RUN_POSITION))
 
 
-def get_screen_image(type: 'str|None'=None):
+def get_screen_image(name='screen', type: 'str|None'=None):
     """
     Get the screenshot
     args:
@@ -31,7 +31,7 @@ def get_screen_image(type: 'str|None'=None):
         image(numpy array) - the screenshot of the screen 
     """
 
-    screen_path = os.path.join(PROJECT_PATH, SETTING.TEMP_PATH, 'screen.png')
+    screen_path = os.path.join(PROJECT_PATH, SETTING.TEMP_PATH, name + '.png')
 
     if type != 'read':
         scim = ImageGrab.grab() 

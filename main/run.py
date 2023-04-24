@@ -19,7 +19,7 @@ if __name__ == '__main__':
         game_position = get_window_position(SETTING.WINDOW_TITLE)
 
         # get screen image
-        screen_image = get_screen_image()
+        screen_image = get_screen_image('screen_round_{}'.format(i), 'read' if SETTING.DEBUG_MODE else None)
 
         # split items image from screen image
         game_item_images = split_items(screen_image, game_position, save_image=False)
@@ -36,13 +36,13 @@ if __name__ == '__main__':
         # * auto click items to clean || 10 11 11 14 all
         # round 0, 1, 2, 3 / 4(final)
         if i == 0:
-            clean_items(type_matrix, game_position, False, max_clean_count=11, min_clean_count=10)
+            clean_items(type_matrix, game_position, SETTING.DEBUG_MODE, max_clean_count=11, min_clean_count=10)
         elif i == 1 or i == 2:
-            clean_items(type_matrix, game_position, False, 12, 11)
+            clean_items(type_matrix, game_position, SETTING.DEBUG_MODE, 12, 11)
         elif i == 3:
-            clean_items(type_matrix, game_position, False, 14, 14)
+            clean_items(type_matrix, game_position, SETTING.DEBUG_MODE, 14, 14)
         else:
-            clean_items(type_matrix, game_position, False, -1, 20)
+            clean_items(type_matrix, game_position, SETTING.DEBUG_MODE, -1, 20)
 
         if i < 4:
             input('Press [Enter] to next round || [Ctrl + C] to exit')

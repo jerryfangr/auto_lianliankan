@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
 LOG_LEVEL = 1
+DEBUG_MODE = False
 TEMP_PATH = "temp"
 
 # allow outside link
