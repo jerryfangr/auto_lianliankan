@@ -36,7 +36,7 @@ if __name__ == '__main__':
         # * auto click items to clean || 10 11 11 14 all
         # round 0, 1, 2, 3 / 4(final)
         if i == 0:
-            clean_items(type_matrix, game_position, SETTING.DEBUG_MODE, max_clean_count=11, min_clean_count=11)
+            clean_items(type_matrix, game_position, SETTING.DEBUG_MODE, max_clean_count=11, min_clean_count=10)
         elif i == 1 or i == 2:
             clean_items(type_matrix, game_position, SETTING.DEBUG_MODE, 12, 11)
         elif i == 3:
