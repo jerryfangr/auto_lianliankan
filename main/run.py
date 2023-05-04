@@ -11,7 +11,7 @@ if __name__ == '__main__':
     log_print('[Ctrl + C] to exit, Enter any [number] to start')
     set_run_position()
 
-    round = int(input('round: ') or 0)
+    round = int(input('round(0-4): ') or 0)
     round = 4 if round >= 5 else round
     for i in range(round, 5):
         log_print('-----------> round {} start <-----------'.format(i))
