@@ -1,6 +1,7 @@
 from time import sleep
-from tools.logger import log_print
+
 from config import setting as SETTING
+from tools.logger import log_print
 from tools.screen import click_screen
 from tools.match import check_can_link
 

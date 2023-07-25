@@ -1,7 +1,9 @@
 import time
+
 import numpy as np
-from tools.logger import log_print
+
 from config import setting as SETTING
+from tools.logger import log_print
 from tools.screen import set_run_position, get_window_position, get_screen_image
 from tools.image import split_items, unique_images, images_to_number_type
 from tools.game import clean_items

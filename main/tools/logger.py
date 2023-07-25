@@ -1,5 +1,6 @@
 import time
 import os
+
 from config import setting
 
 # calculate the path of the '../log/log.txt'

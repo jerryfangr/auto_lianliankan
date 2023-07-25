@@ -1,8 +1,10 @@
 import os
+
 import cv2
 import numpy as np
-from tools.logger import log_print
+
 from config import setting as SETTING
+from tools.logger import log_print
 
 PROJECT_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 

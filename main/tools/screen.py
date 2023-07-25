@@ -1,9 +1,11 @@
 import math
 import os
+
 import win32api, win32gui, win32con, win32com.client
 import cv2
 from PIL import ImageGrab
 from time import sleep
+
 from config import setting as SETTING
 from tools.logger import log_print
 
