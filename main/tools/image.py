@@ -174,7 +174,6 @@ def images_to_number_type(image_list: 'list', unique_images: 'list', wrapper=Non
     type_images = []
     type_images.extend(unique_images)
     type_images.extend(BLOCK_IMGS)
-    uq_number_type = len(type_images) + 20
     if wrapper is not None:
         image_number_type.append([wrapper for i in range(SETTING.VERTICAL_NUM + 2)])
 
@@ -186,8 +185,7 @@ def images_to_number_type(image_list: 'list', unique_images: 'list', wrapper=Non
                 if type_index < len(EMPTY_IMGS):
                     line.append(0)
                 elif type_index >= len(unique_images):
-                    line.append(uq_number_type)
-                    uq_number_type += 1
+                    line.append(SETTING.BLOCK_TYPE_NUMBER)
                 else:
                     line.append(type_index)
                 break

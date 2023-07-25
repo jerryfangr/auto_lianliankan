@@ -11,6 +11,9 @@ EMPTY_IMAGE_PATH = ["data/empty1.png"]
 # image path of obstacles
 BLOCK_IMAGE_PATH = ["data/block1.png"]
 
+# the type number of block(>90)
+BLOCK_TYPE_NUMBER = 90
+
 # game window title
 WINDOW_TITLE = "MI 9 Transparent Edition"
 

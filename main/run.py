@@ -24,7 +24,7 @@ if __name__ == '__main__':
         screen_image = get_screen_image('screen_round_{}'.format(i), 'read' if SETTING.DEBUG_MODE else None)
 
         # split items image from screen image
-        game_item_images = split_items(screen_image, game_position, save_image=False)
+        game_item_images = split_items(screen_image, game_position, save_image=SETTING.DEBUG_MODE)
 
         # get unique type images
         type_images = unique_images(game_item_images)

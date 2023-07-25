@@ -1,3 +1,4 @@
+import copy
 from time import sleep
 
 from config import setting as SETTING
@@ -20,7 +21,7 @@ def calculate_clean_position(type_matrix, game_x: 'int', game_y: 'int'):
                 # find the same type item
                 for m in range(0, len(type_matrix)):
                     for n in range(0, len(type_matrix[0])):
-                        if type_matrix[m][n] != 0:
+                        if type_matrix[m][n] != 0 and type_matrix[m][n] != SETTING.BLOCK_TYPE_NUMBER:
                             if check_can_link(i, j, m, n, type_matrix):
                                 type_matrix[i][j] = 0
                                 type_matrix[m][n] = 0
@@ -32,10 +33,39 @@ def calculate_clean_position(type_matrix, game_x: 'int', game_y: 'int'):
                                 clean_position.append((x2 + cx, y2 + cy))
                                 clean_position.append('({},{}) <-> ({},{})'.format(i+1-start, j+1-start, m+1-start, n+1-start))
 
-
-
                                 return clean_position
     return clean_position
+
+
+def calculate_position_list(type_matrix, game_x: 'int', game_y: 'int', max_clean_count: 'int'):
+    count = 0
+    clean_position = calculate_clean_position(type_matrix, game_x, game_y)
+    clean_position_list = []
+    # if there are clean item, append position
+    while len(clean_position) > 0:
+        clean_position_list.append(clean_position)
+        count += 1
+
+        # if got enough clean items, break the loop
+        if max_clean_count > 0 and count >= max_clean_count:
+            break
+
+        clean_position = calculate_clean_position(type_matrix, game_x, game_y)
+    
+    return clean_position_list
+
+
+def get_block_index_List(type_matrix, condition_fun):
+    block_list = []
+
+    start = 1 if SETTING.ALLOW_OUTSIDE_LINK else 0
+    endSub = 1 if SETTING.ALLOW_OUTSIDE_LINK else 0
+    for i in range(start, len(type_matrix) - endSub):
+        for j in range(start, len(type_matrix[i]) - endSub):
+            if condition_fun(type_matrix[i][j]):
+                block_list.append((i, j))
+    
+    return block_list
 
 
 def clean_items(type_matrix, game_position: 'tuple', fake_click: 'bool' = False, max_clean_count: 'int' = -1, min_clean_count: 'int' = -1):
@@ -45,21 +75,37 @@ def clean_items(type_matrix, game_position: 'tuple', fake_click: 'bool' = False,
     game_x = game_position[0] + SETTING.MARGIN_LEFT
     game_y = game_position[1] + SETTING.MARGIN_TOP
 
-    count = 0
-    clean_position = calculate_clean_position(type_matrix, game_x, game_y)
-    clean_position_list = []
-    while len(clean_position) > 0:
-        clean_position_list.append(clean_position)
-        count += 1
+    clean_position_list = calculate_position_list(copy.deepcopy(type_matrix), game_x, game_y, max_clean_count)
+    block_index_List = get_block_index_List(type_matrix, lambda x: x == SETTING.BLOCK_TYPE_NUMBER )
+    log_print('Get all clean items: ' + str(len(clean_position_list)) + ' || Least need: ' + str(min_clean_count))
 
-        if max_clean_count > 0 and count >= max_clean_count:
-            break
+    # if there no enough clean item
+    if len(clean_position_list) < min_clean_count:
 
-        clean_position = calculate_clean_position(type_matrix, game_x, game_y)
+        # recover block
+        for block_index in block_index_List:
+            x,y = block_index
+            type_matrix[block_index[0]][block_index[1]] = SETTING.BLOCK_TYPE_NUMBER
+        
+        # check clean item,  after delete block
+        for block_index in block_index_List:
+            col,cum = block_index
+            type_matrix[block_index[0]][block_index[1]] = 0
 
-    log_print('Get all clean items: ' + str(count) + ' || Least need: ' + str(min_clean_count))
+            clean_position_list = calculate_position_list(copy.deepcopy(type_matrix), game_x, game_y, max_clean_count)
 
-    if len(clean_position_list) >= min_clean_count:
+            if len(clean_position_list) >= min_clean_count:
+                break
+        
+        if len(clean_position_list) >= min_clean_count:
+            bias = 0 if SETTING.ALLOW_OUTSIDE_LINK else -1
+            log_print('Clean item: you should delete block ({},{})'.format(cum+bias, col+bias))
+
+        else:
+            log_print('Clean item: Noway to clean, please retry')
+    
+    # start clean item
+    else:
         for clean_position in clean_position_list:
             [item1_position, item2_position, description] = clean_position
             
@@ -70,8 +116,6 @@ def clean_items(type_matrix, game_position: 'tuple', fake_click: 'bool' = False,
             sleep(SETTING.CLEAN_INTERVAL)
             
             log_print('Clean item: ' + description + ' Done')
-    else:
-        log_print('Clean item: Not enough items to clean')
 
     # move cursor back to run position
     click_screen(SETTING.RUN_POSITION[0], SETTING.RUN_POSITION[1], 0.06)
