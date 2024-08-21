@@ -13,12 +13,13 @@ BLOCK_IMAGE_PATH = ["data/block1.png"]
 
 # the type number of block(>90)
 BLOCK_TYPE_NUMBER = 90
+EMPTY_TYPE_NUMBER = 0
 
 # game window title
 WINDOW_TITLE = "MI 9 Transparent Edition"
 
 # the interval of game click (seconds)
-CLEAN_INTERVAL = 0.2
+CLEAN_INTERVAL = 0.3
 
 # the MARGIN_LEFT of game area to the game window
 MARGIN_LEFT = 56

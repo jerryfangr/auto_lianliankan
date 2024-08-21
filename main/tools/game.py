@@ -81,18 +81,18 @@ def clean_items(type_matrix, game_position: 'tuple', fake_click: 'bool' = False,
 
     # if there no enough clean item
     if len(clean_position_list) < min_clean_count:
-
-        # recover block
-        for block_index in block_index_List:
-            x,y = block_index
-            type_matrix[block_index[0]][block_index[1]] = SETTING.BLOCK_TYPE_NUMBER
         
-        # check clean item,  after delete block
+        # check clean item, after delete block
         for block_index in block_index_List:
             col,cum = block_index
-            type_matrix[block_index[0]][block_index[1]] = 0
 
+            origin_type = type_matrix[col][cum]
+
+            type_matrix[col][cum] = SETTING.EMPTY_TYPE_NUMBER
             clean_position_list = calculate_position_list(copy.deepcopy(type_matrix), game_x, game_y, max_clean_count)
+            
+            # recover block
+            type_matrix[col][cum] = origin_type
 
             if len(clean_position_list) >= min_clean_count:
                 break
@@ -110,14 +110,14 @@ def clean_items(type_matrix, game_position: 'tuple', fake_click: 'bool' = False,
             [item1_position, item2_position, description] = clean_position
             
             if fake_click is False:
-                click_screen(item1_position[0], item1_position[1], 0.06)
-                click_screen(item2_position[0], item2_position[1], 0.06)
+                click_screen(item1_position[0], item1_position[1], 0.08)
+                click_screen(item2_position[0], item2_position[1], 0.08)
             
             sleep(SETTING.CLEAN_INTERVAL)
             
             log_print('Clean item: ' + description + ' Done')
 
     # move cursor back to run position
-    click_screen(SETTING.RUN_POSITION[0], SETTING.RUN_POSITION[1], 0.06)
+    click_screen(SETTING.RUN_POSITION[0], SETTING.RUN_POSITION[1], 0.08)
 
 
