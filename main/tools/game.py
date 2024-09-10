@@ -1,5 +1,5 @@
-import copy
 from time import sleep
+import numpy as np
 
 from config import setting as SETTING
 from tools.logger import log_print
@@ -75,7 +75,7 @@ def clean_items(type_matrix, game_position: 'tuple', fake_click: 'bool' = False,
     game_x = game_position[0] + SETTING.MARGIN_LEFT
     game_y = game_position[1] + SETTING.MARGIN_TOP
 
-    clean_position_list = calculate_position_list(copy.deepcopy(type_matrix), game_x, game_y, max_clean_count)
+    clean_position_list = calculate_position_list(np.copy(type_matrix), game_x, game_y, max_clean_count)
     block_index_List = get_block_index_List(type_matrix, lambda x: x == SETTING.BLOCK_TYPE_NUMBER )
     log_print('Get all clean items: ' + str(len(clean_position_list)) + ' || Least need: ' + str(min_clean_count))
 
@@ -85,11 +85,10 @@ def clean_items(type_matrix, game_position: 'tuple', fake_click: 'bool' = False,
         # check clean item, after delete block
         for block_index in block_index_List:
             col,cum = block_index
-
             origin_type = type_matrix[col][cum]
-
             type_matrix[col][cum] = SETTING.EMPTY_TYPE_NUMBER
-            clean_position_list = calculate_position_list(copy.deepcopy(type_matrix), game_x, game_y, max_clean_count)
+
+            clean_position_list = calculate_position_list(np.copy(type_matrix), game_x, game_y, max_clean_count)
             
             # recover block
             type_matrix[col][cum] = origin_type
@@ -118,6 +117,6 @@ def clean_items(type_matrix, game_position: 'tuple', fake_click: 'bool' = False,
             log_print('Clean item: ' + description + ' Done')
 
     # move cursor back to run position
-    click_screen(SETTING.RUN_POSITION[0], SETTING.RUN_POSITION[1], 0.08)
+    click_screen(SETTING.RUN_POSITION[0], SETTING.RUN_POSITION[1], 0.08, 1)
 
 

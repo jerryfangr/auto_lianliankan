@@ -1,2 +1,2 @@
-conda activate game
+conda activate ml-cheat
 python ./main/test.py

@@ -20,19 +20,19 @@ if __name__ == '__main__':
     for i in range(round, 5):
         log_print('-----------> round {} start <-----------'.format(i))
         # get game window position
-        game_position = (1293, 40, 1745, 1023)
+        game_position = (1273, 40, 1725, 1023)
 
         # get screen image
         screen_image = get_screen_image('screen_round_{}'.format(i), 'read' if SETTING.DEBUG_MODE else None)
 
         # split items image from screen image
-        game_item_images = split_items(screen_image, game_position, save_image=False)
+        game_item_images = split_items(screen_image, game_position, save_image=SETTING.DEBUG_MODE)
 
         # get unique type images
-        type_images = unique_images(game_item_images)
+        type_images = unique_images(game_item_images, save_image=SETTING.DEBUG_MODE)
 
         # map item image to type number(by type images index) then transpose the matrix
-        wrapper = 0 if SETTING.ALLOW_OUTSIDE_LINK else None
+        wrapper = SETTING.EMPTY_TYPE_NUMBER if SETTING.ALLOW_OUTSIDE_LINK else None
         type_matrix = np.transpose(images_to_number_type(game_item_images, type_images, wrapper))
 
         log_print('type_matrix: \n' + str(type_matrix))

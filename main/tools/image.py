@@ -8,19 +8,39 @@ from tools.logger import log_print
 
 PROJECT_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-def ORB_img_similarity(img1: 'np.uint8|str', img2: 'np.uint8|str', type='data'):
+
+def is_pure_color_image(image: str, threshold=5) -> bool:
+    """
+    Determine whether an image is considered as a pure color or gradient color image.
+    A pure or gradient color image has very little variation in pixel values.
+
+    Args:
+        image - the input image as a numpy array
+        threshold - the standard deviation threshold to determine if it's a pure/gradient color image
+
+    Returns:
+        True if the image is considered a pure or gradient color image, False otherwise
+    """
+    # Compute the standard deviation of the pixel values
+    std_devs = np.std(image, axis=(0, 1))
+
+    # If the standard deviation of any channel is below the threshold, it's considered a pure/gradient color image
+    return np.all(std_devs < threshold)
+
+
+def ORB_img_similarity(img1: 'np.uint8|str', img2: 'np.uint8|str', img_type='data'):
     """
     Calculate the similarity of two images using ORB algorithm
     args:
         img1 - the first image
         img2 - the second image
-        type - the type of img1 and img2, 'data' or 'path'
+        img_type - the type of img1 and img2, 'data' or 'path'
     return:
         (float) - the similarity of two images 0 - 1
     """
 
     # read image path to np.uint8
-    if type == 'path':
+    if img_type == 'path':
         # img1 = cv2.imread(img1, cv2.IMREAD_GRAYSCALE)
         img1 = cv2.imread(img1)
         img2 = cv2.imread(img2)
@@ -28,6 +48,15 @@ def ORB_img_similarity(img1: 'np.uint8|str', img2: 'np.uint8|str', type='data'):
     # if all pixels are 0, means two images are same.
     if not np.any(np.subtract(img1, img2)):
         return 1
+    
+    is_img1_pure = is_pure_color_image(img1)
+    is_img2_pure = is_pure_color_image(img2)
+
+    if is_img1_pure and is_img2_pure:
+        return 1
+
+    if (is_img1_pure and not is_img2_pure) or (not is_img1_pure and is_img2_pure):
+        return 0
 
     # initialize ORB detector
     orb = cv2.ORB_create(fastThreshold=1, edgeThreshold=0)
@@ -124,10 +153,7 @@ def is_image_exist(img: 'np.uint8', img_list: 'list'):
     return:
         (bool) - True if the image is exist in the list
     """
-    exist_images = []
-    exist_images.extend(img_list)
-    exist_images.extend(BLOCK_IMGS)
-    for exist_img in exist_images:
+    for exist_img in img_list:
         sm = ORB_img_similarity(img, exist_img)
         if sm > 0.35:
             return True
@@ -136,7 +162,7 @@ def is_image_exist(img: 'np.uint8', img_list: 'list'):
     return False
 
 
-def unique_images(images: 'list'):
+def unique_images(images: 'list', save_image=False):
     """
     Calculate the unique images from the list
     args:
@@ -152,13 +178,21 @@ def unique_images(images: 'list'):
     for empty_img in EMPTY_IMGS:
         uq_imgs.append(empty_img)
 
+    for block_img in BLOCK_IMGS:
+        uq_imgs.append(block_img)
+
     for img in images:
         if not is_image_exist(img, uq_imgs):
             uq_imgs.append(img)
+
+    if save_image:
+        for i, item in enumerate(uq_imgs):
+            cv2.imwrite(os.path.join(PROJECT_PATH, 'temp', 'type_{}.png'.format(i)), item)
+
     return uq_imgs
 
 
-def images_to_number_type(image_list: 'list', unique_images: 'list', wrapper=None):
+def images_to_number_type(image_list: 'list', type_images: 'list', wrapper=None):
     """
     Calculate the number type of the images
     args:
@@ -170,21 +204,19 @@ def images_to_number_type(image_list: 'list', unique_images: 'list', wrapper=Non
     """
 
     image_number_type = []
-    line = [0] if wrapper is not None else []
-    type_images = []
-    type_images.extend(unique_images)
-    type_images.extend(BLOCK_IMGS)
+    line = [wrapper] if wrapper is not None else []
     if wrapper is not None:
         image_number_type.append([wrapper for i in range(SETTING.VERTICAL_NUM + 2)])
 
     # calculate the number type of the images(the number type is the index of the unique images)
-    for square in image_list:
+    for item_index, item_img in enumerate(image_list):
         for type_index, type_img in enumerate(type_images):
-            sm = ORB_img_similarity(square, type_img)
-            if sm > 0.35:
+            sm = ORB_img_similarity(type_img, item_img)
+            # print(item_index,  '-m->', type_index, '=', sm)
+            if sm >= 0.35:
                 if type_index < len(EMPTY_IMGS):
-                    line.append(0)
-                elif type_index >= len(unique_images):
+                    line.append(SETTING.EMPTY_TYPE_NUMBER)
+                elif type_index >= len(EMPTY_IMGS) and type_index < (len(EMPTY_IMGS)+len(BLOCK_IMGS)):
                     line.append(SETTING.BLOCK_TYPE_NUMBER)
                 else:
                     line.append(type_index)
