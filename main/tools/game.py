@@ -68,6 +68,14 @@ def get_block_index_List(type_matrix, condition_fun):
     return block_list
 
 
+def stop_game(game_position: 'tuple', stop = True, sleep_time = 0):
+    game_x, game_y = game_position
+
+    btn_position = SETTING.STOP_BUTTON if stop else SETTING.CONTINUE_BUTTON
+    btn_x, btn_y = btn_position
+    click_screen(game_x + btn_x, game_y + btn_y)
+    sleep(sleep_time)
+
 def clean_items(type_matrix, game_position: 'tuple', fake_click: 'bool' = False, max_clean_count: 'int' = -1, min_clean_count: 'int' = -1):
     '''
     clean the item
@@ -78,6 +86,8 @@ def clean_items(type_matrix, game_position: 'tuple', fake_click: 'bool' = False,
     clean_position_list = calculate_position_list(np.copy(type_matrix), game_x, game_y, max_clean_count)
     block_index_List = get_block_index_List(type_matrix, lambda x: x == SETTING.BLOCK_TYPE_NUMBER )
     log_print('Get all clean items: ' + str(len(clean_position_list)) + ' || Least need: ' + str(min_clean_count))
+
+    min_clean_count = min_clean_count if min_clean_count != -1 else len(clean_position_list)
 
     # if there no enough clean item
     if len(clean_position_list) < min_clean_count:
@@ -105,18 +115,23 @@ def clean_items(type_matrix, game_position: 'tuple', fake_click: 'bool' = False,
     
     # start clean item
     else:
+        break_count = 0
         for clean_position in clean_position_list:
+
+            if break_count >= min_clean_count:
+                break
+
             [item1_position, item2_position, description] = clean_position
             
             if fake_click is False:
-                click_screen(item1_position[0], item1_position[1], 0.08)
-                click_screen(item2_position[0], item2_position[1], 0.08)
-            
+                click_screen(item1_position[0], item1_position[1], 0.06)
+                click_screen(item2_position[0], item2_position[1], 0.1)
+
             sleep(SETTING.CLEAN_INTERVAL)
-            
-            log_print('Clean item: ' + description + ' Done')
+            break_count += 1
+            log_print(f'Clean {break_count}:' + description)
 
     # move cursor back to run position
-    click_screen(SETTING.RUN_POSITION[0], SETTING.RUN_POSITION[1], 0.08, 1)
+    not fake_click and click_screen(SETTING.RUN_POSITION[0], SETTING.RUN_POSITION[1], 0.08, 1)
 
 

@@ -1,10 +1,11 @@
 import os
-
 import cv2
 import numpy as np
 
 from config import setting as SETTING
 from tools.logger import log_print
+from ck_model.predict import load_model, predict_same
+
 
 PROJECT_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -28,7 +29,7 @@ def is_pure_color_image(image: str, threshold=5) -> bool:
     return np.all(std_devs < threshold)
 
 
-def ORB_img_similarity(img1: 'np.uint8|str', img2: 'np.uint8|str', img_type='data'):
+def cal_img_similarity(img1: 'np.uint8|str', img2: 'np.uint8|str', img_type='data', detector_type='sift'):
     """
     Calculate the similarity of two images using ORB algorithm
     args:
@@ -58,11 +59,20 @@ def ORB_img_similarity(img1: 'np.uint8|str', img2: 'np.uint8|str', img_type='dat
     if (is_img1_pure and not is_img2_pure) or (not is_img1_pure and is_img2_pure):
         return 0
 
-    # initialize ORB detector
-    orb = cv2.ORB_create(fastThreshold=1, edgeThreshold=0)
+    # initialize detector
+    detector = cv2.SIFT_create(
+        nfeatures=60,  # 减少特征点数量，因为图像很小
+        nOctaveLayers=2,  # 减少每层金字塔的层数
+        contrastThreshold=0.03,  # 降低对比度阈值
+        edgeThreshold=10  # 降低边缘阈值
+    )
+
+    if detector_type == 'orb':
+        detector = cv2.ORB_create(fastThreshold=3, edgeThreshold=8)
+
     # find the key points and descriptors with ORB
-    kp1, des1 = orb.detectAndCompute(img1, None)
-    kp2, des2 = orb.detectAndCompute(img2, None)
+    kp1, des1 = detector.detectAndCompute(img1, None)
+    kp2, des2 = detector.detectAndCompute(img2, None)
 
     if des1 is None and des2 is None:
         return 1
@@ -71,18 +81,26 @@ def ORB_img_similarity(img1: 'np.uint8|str', img2: 'np.uint8|str', img_type='dat
         return 0
 
     # extract and compute the feature points
-    bf = cv2.BFMatcher(cv2.NORM_HAMMING)
+    bf = cv2.BFMatcher()
     # knn filter result
     matches = bf.knnMatch(des1, trainDescriptors=des2, k=2)
+    matches2 = bf.knnMatch(des2, trainDescriptors=des1, k=2)
 
-    if len(matches) == 0 or len(matches[0]) <= 1:
+    if len(matches) == 0 or len(matches[0]) <= 1 or len(matches2) == 0 or len(matches2[0]) <= 1:
         return 0
 
     # ratio test as per Lowe's paper
     good = [m for (m, n) in matches if m.distance < 0.75 * n.distance]
+    good2 = [m for (m, n) in matches2 if m.distance < 0.75 * n.distance]
     similarly = len(good) / len(matches)
+    similarly2 = len(good2) / len(matches2)
 
-    return similarly
+    return max(similarly, similarly2)
+
+
+def is_same_img(img1: 'np.uint8', img2: 'np.uint8'):
+    # return cal_img_similarity(img1, img2) >= 0.4
+    return predict_same(img1, img2, load_model()) == 1
 
 
 def split_items(screen_image: 'np.uint8', game_pos: 'tuple', save_image=False):
@@ -116,7 +134,7 @@ def split_items(screen_image: 'np.uint8', game_pos: 'tuple', save_image=False):
     cut_items = [item[SETTING.SUB_LT_Y:SETTING.SUB_RB_Y, SETTING.SUB_LT_X:SETTING.SUB_RB_X] for item in items]
     if save_image:
         for i, item in enumerate(cut_items):
-            cv2.imwrite(os.path.join(PROJECT_PATH, 'temp', 'item_{}.png'.format(i)), item)
+            cv2.imwrite(os.path.join(PROJECT_PATH, SETTING.TEMP_PATH, 'item_{}.png'.format(i)), item)
     return cut_items
 
 
@@ -154,8 +172,7 @@ def is_image_exist(img: 'np.uint8', img_list: 'list'):
         (bool) - True if the image is exist in the list
     """
     for exist_img in img_list:
-        sm = ORB_img_similarity(img, exist_img)
-        if sm > 0.35:
+        if is_same_img(img, exist_img):
             return True
         else:
             continue
@@ -187,7 +204,7 @@ def unique_images(images: 'list', save_image=False):
 
     if save_image:
         for i, item in enumerate(uq_imgs):
-            cv2.imwrite(os.path.join(PROJECT_PATH, 'temp', 'type_{}.png'.format(i)), item)
+            cv2.imwrite(os.path.join(PROJECT_PATH, SETTING.TEMP_PATH, 'type_{}.png'.format(i)), item)
 
     return uq_imgs
 
@@ -211,9 +228,7 @@ def images_to_number_type(image_list: 'list', type_images: 'list', wrapper=None)
     # calculate the number type of the images(the number type is the index of the unique images)
     for item_index, item_img in enumerate(image_list):
         for type_index, type_img in enumerate(type_images):
-            sm = ORB_img_similarity(type_img, item_img)
-            # print(item_index,  '-m->', type_index, '=', sm)
-            if sm >= 0.35:
+            if is_same_img(item_img, type_img):
                 if type_index < len(EMPTY_IMGS):
                     line.append(SETTING.EMPTY_TYPE_NUMBER)
                 elif type_index >= len(EMPTY_IMGS) and type_index < (len(EMPTY_IMGS)+len(BLOCK_IMGS)):

@@ -52,4 +52,5 @@ screen.png
 __pycache__/
 temp/
 *.log.txt
-
+checkpoints/
+train-data/

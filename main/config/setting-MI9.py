@@ -17,21 +17,21 @@ BLOCK_TYPE_NUMBER = 90
 EMPTY_TYPE_NUMBER = 0
 
 # game window title
-WINDOW_TITLE = "23127PN0CC"
+WINDOW_TITLE = "MI 9 Transparent Edition"
 
 # the interval of game click (seconds)
 CLEAN_INTERVAL = 0.3
 
-WINDOW_BAR = 30
+WINDOW_BAR = 28
 
 # the MARGIN_LEFT of game area to the game window
-MARGIN_LEFT = 58
+MARGIN_LEFT = 56
 # the MARGIN_TOP of game area to the game window + title bar
-MARGIN_TOP = 251 + WINDOW_BAR
+MARGIN_TOP = 244 + WINDOW_BAR
 
 # STOP & CONTINUE BUTTON
 STOP_BUTTON = (45, 68 + WINDOW_BAR)
-CONTINUE_BUTTON = (300, 560 + WINDOW_BAR)
+CONTINUE_BUTTON = (MARGIN_LEFT + 5, MARGIN_TOP + 5)
 
 # the number of the item in the horizontal direction
 HORIZONTAL_NUM = 6
@@ -39,15 +39,14 @@ HORIZONTAL_NUM = 6
 VERTICAL_NUM = 8
 
 # the size of the item 
-ITEM_WIDTH = 54
-ITEM_HEIGHT = 54
+ITEM_WIDTH = ITEM_HEIGHT = 55
 
 # cut the image noise, (LT)left top to (RB)right bottom
-bx, by = 5, 5
-SUB_LT_X = 3
-SUB_LT_Y = 3
-SUB_RB_X = ITEM_WIDTH - 2
-SUB_RB_Y = ITEM_HEIGHT - 2
+bx, by = 6, 6
+SUB_LT_X = bx
+SUB_LT_Y = by
+SUB_RB_X = ITEM_WIDTH + bx
+SUB_RB_Y = ITEM_HEIGHT + by
 
 # the final width and height of the item，the final item is 55-6=49x49
 FINAL_WIDTH = ITEM_WIDTH - bx

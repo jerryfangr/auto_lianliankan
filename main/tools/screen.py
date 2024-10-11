@@ -42,7 +42,7 @@ def get_screen_image(name='screen', type: 'str|None'=None):
     return cv2.imread(screen_path)
 
 
-def get_window_position(window_title=''):
+def get_window_position(window_title='', debug=False):
     """
     Get the window position
     args:
@@ -51,9 +51,17 @@ def get_window_position(window_title=''):
         (x, y) - the position of the window
     """
 
+    config_path = os.path.join(PROJECT_PATH, SETTING.CONFIG_PATH, 'tmp.txt')
+
+    if debug:
+        # read the window position from the config file
+        with open(config_path, 'r') as f:
+            pos = eval(f.read())
+        return pos
+
     # FindWindow(lpClassName=None, lpWindowName=None)
     window = win32gui.FindWindow(None, window_title)
-    
+
     while not window:
         log_print('Failed to obtain window, try again in 3 seconds...', 'error')
         sleep(3)
@@ -65,6 +73,10 @@ def get_window_position(window_title=''):
     # set the window to the foreground
     win32gui.SetForegroundWindow(window)
     pos = win32gui.GetWindowRect(window)
+
+    # write the window position to the config file
+    with open(config_path, 'w') as f:
+        f.write(str(pos))
 
     log_print('Window position: %s' % str(pos), 'info')
     return (pos[0], pos[1])
@@ -86,5 +98,6 @@ def click_screen(x: 'int', y: 'int', sleep_wait=0.1, count=2):
     for i in range(count):
         win32api.SetCursorPos((x, y))
         win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, x, y, 0, 0)
+        sleep(0.03)
         win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, x, y, 0, 0)
         sleep(sleep_wait)
