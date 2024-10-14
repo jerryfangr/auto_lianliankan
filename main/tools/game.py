@@ -129,7 +129,8 @@ def clean_items(type_matrix, game_position: 'tuple', fake_click: 'bool' = False,
 
             sleep(SETTING.CLEAN_INTERVAL)
             break_count += 1
-            log_print(f'Clean {break_count}:' + description)
+            show_num = str(break_count) if break_count > 9 else '0' + str(break_count) 
+            log_print(f'Clean {show_num}: ' + description)
 
     # move cursor back to run position
     not fake_click and click_screen(SETTING.RUN_POSITION[0], SETTING.RUN_POSITION[1], 0.08, 1)

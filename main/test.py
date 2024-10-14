@@ -44,17 +44,12 @@ if __name__ == '__main__':
 
         log_print('type_matrix: \n' + str(type_matrix))
 
-        # * auto click items to clean || 10 11 11 14 all
-        # round 0, 1, 2, 3 / 4(final)
-        if round == 0:
-            clean_items(type_matrix, game_position, SETTING.DEBUG_MODE, max_clean_count=10, min_clean_count=10)
-        elif round == 1 or round == 2:
-            clean_items(type_matrix, game_position, SETTING.DEBUG_MODE, 11, 11)
-        elif round == 3:
-            clean_items(type_matrix, game_position, SETTING.DEBUG_MODE, 14, 14)
-        elif round == 4:
-            clean_items(type_matrix, game_position, SETTING.DEBUG_MODE, 20, 20)
-        else:
-            clean_items(type_matrix, game_position, SETTING.DEBUG_MODE, -1, -1)
+        # dict to store round condition(0~4 / a)
+        round_condition = [
+            10, 11, 11, 14, 22,
+            -1
+        ]
 
+        # * auto click items to clean
+        clean_items(type_matrix, game_position, SETTING.DEBUG_MODE, max_clean_count=round_condition[round], min_clean_count=round_condition[round])
         round += 1

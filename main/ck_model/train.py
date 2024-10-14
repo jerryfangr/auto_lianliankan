@@ -54,12 +54,12 @@ def train(epochs=5, save_interval=1, load_model=0, train_data_size=3800, learn_r
 
         # 每50轮保存一次模型
         if (epoch + 1) % save_interval == 0:
-            last_epoch = epoch + 1
-            model_path = os.path.join(model_save_dir, f'ep_{last_epoch}.pth')
+            last_save_epoch = epoch + 1
+            model_path = os.path.join(model_save_dir, f'ep_{last_save_epoch}.pth')
             torch.save(model.state_dict(), model_path)
         
-        if final_loss < 0.0001:
-            print(f'Loss < 0.0001, end training')
+        if final_loss < 0.00002:
+            print(f'Loss < 0.00001, end training')
             break
 
     model.eval()  # 设置模型为评估模式
@@ -74,10 +74,12 @@ def train(epochs=5, save_interval=1, load_model=0, train_data_size=3800, learn_r
             total += labels.size(0)
             correct += (predictions == labels).sum().item()  # 计算正确预测的数量
 
-    return last_epoch, 100 * correct / total
+    return last_save_epoch, 100 * correct / total
 
 
-def save_best_model(epochs=5, target=0):
+def save_best_model(epochs=1, target=0):
+    if epochs == target:
+        return
     model_dir = os.path.join(PROJECT_PATH, 'ck_model/checkpoints')
 
     good_model_path = os.path.join(model_dir, f'ep_{epochs}.pth')
